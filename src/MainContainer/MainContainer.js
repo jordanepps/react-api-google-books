@@ -7,14 +7,20 @@ export default class MainContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userInput: ''
+			userInput: '',
+			printType: 'all',
+			filter: 'none'
 		};
 	}
 	getData() {
 		console.log('connected');
 	}
-	setUserInput(userInput) {
+	setUserInput(input) {
+		const userInput = input.split(' ').join('+');
 		this.setState({ userInput });
+	}
+	setFilter(selected) {
+		this.setState(selected);
 	}
 	render() {
 		return (
@@ -22,6 +28,9 @@ export default class MainContainer extends Component {
 				<FormContainer
 					submitHandler={e => this.getData(e)}
 					inputHandler={input => this.setUserInput(input)}
+					changeHandler={selected => {
+						this.setFilter(selected);
+					}}
 				/>
 			</main>
 		);
