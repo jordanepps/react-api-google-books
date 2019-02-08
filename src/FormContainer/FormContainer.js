@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import './FormContainer.css';
 
+import Search from '../Search/Search';
+
 export default class FormContainer extends Component {
 	formHandler(e) {
 		e.preventDefault();
@@ -19,16 +21,7 @@ export default class FormContainer extends Component {
 		return (
 			<div>
 				<form onSubmit={e => this.formHandler(e)}>
-					<div>
-						<label htmlFor="search">Search:</label>
-						<input
-							type="text"
-							id="search"
-							name="search"
-							onChange={e => this.getUserInput(e.target.value)}
-						/>
-						<input type="submit" value="Search" />
-					</div>
+					<Search inputHandler={input => this.getUserInput(input)} />
 					<div>
 						<label htmlFor="printType">Print Type: </label>
 						<select
