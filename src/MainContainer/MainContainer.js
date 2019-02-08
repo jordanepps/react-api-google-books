@@ -9,11 +9,21 @@ export default class MainContainer extends Component {
 		this.state = {
 			userInput: '',
 			printType: 'all',
-			filter: 'none'
+			filter: ''
 		};
 	}
+
 	getData() {
-		console.log('connected');
+		const endPoint = 'https://www.googleapis.com/books/v1/volumes';
+		const input = `q=${this.state.userInput}`;
+		const print = `printType=${this.state.printType}`;
+		const filter = `filter=${this.state.filter}`;
+		const key = 'key=AIzaSyCFSW5dPZJMqvFKnN1KLbemN2oz2Miy50s';
+		const url = `${endPoint}?${input}&${print}&${filter}&${key}`;
+		console.log(url);
+		fetch(url)
+			.then(res => res.json())
+			.then(data => console.log(data));
 	}
 	setUserInput(input) {
 		const userInput = input.split(' ').join('+');
