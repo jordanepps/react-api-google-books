@@ -7,30 +7,40 @@ export default class MainContainer extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			userInput: '',
-			printType: 'all',
-			filter: ''
+			userInputs: {
+				q: '',
+				printType: 'all',
+				filter: 'none'
+			},
+			data: {}
 		};
 	}
 
-	getData() {
+	createUrl() {
 		const endPoint = 'https://www.googleapis.com/books/v1/volumes';
-		const input = `q=${this.state.userInput}`;
-		const print = `printType=${this.state.printType}`;
-		const filter = `filter=${this.state.filter}`;
 		const key = 'key=AIzaSyCFSW5dPZJMqvFKnN1KLbemN2oz2Miy50s';
-		const url = `${endPoint}?${input}&${print}&${filter}&${key}`;
-		console.log(url);
-		fetch(url)
+		const params = Object.keys(this.state.userInputs)
+			.map(key => `${key}=${this.state.userInputs[key]}`)
+			.filter(param => param !== 'filter=none');
+		params.push(key);
+		const paramString = params.join('&');
+		return `${endPoint}?${paramString}`;
+	}
+
+	getData() {
+		fetch(this.createUrl())
 			.then(res => res.json())
-			.then(data => console.log(data));
+			.then(data => this.setState({ data }));
 	}
 	setUserInput(input) {
-		const userInput = input.split(' ').join('+');
-		this.setState({ userInput });
+		const state = Object.assign({}, this.state);
+		state.userInputs.q = input.split(' ').join('+');
+		this.setState(state);
 	}
-	setFilter(selected) {
-		this.setState(selected);
+	setFilter(key, value) {
+		const userInputs = Object.assign({}, this.state.userInputs);
+		userInputs[key] = value;
+		this.setState({ userInputs });
 	}
 	render() {
 		return (
@@ -38,8 +48,8 @@ export default class MainContainer extends Component {
 				<FormContainer
 					submitHandler={e => this.getData(e)}
 					inputHandler={input => this.setUserInput(input)}
-					changeHandler={selected => {
-						this.setFilter(selected);
+					changeHandler={(key, value) => {
+						this.setFilter(key, value);
 					}}
 				/>
 			</main>

@@ -13,10 +13,7 @@ export default class FormContainer extends Component {
 		this.props.inputHandler(userInput);
 	}
 	changeSelection(e) {
-		const type = e.target.name;
-		const value = e.target.value;
-		const selected = { [type]: value };
-		this.props.changeHandler(selected);
+		this.props.changeHandler(e.target.name, e.target.value);
 	}
 	render() {
 		return (
