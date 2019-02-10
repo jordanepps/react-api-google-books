@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './MainContainer.css';
 
 import FormContainer from '../FormContainer/FormContainer';
+import DisplayedBooks from '../DisplayedBooks/DisplayedBooks';
 
 export default class MainContainer extends Component {
 	constructor(props) {
@@ -12,7 +13,8 @@ export default class MainContainer extends Component {
 				printType: 'all',
 				filter: 'none'
 			},
-			data: {}
+			error: null,
+			books: {}
 		};
 	}
 
@@ -29,8 +31,13 @@ export default class MainContainer extends Component {
 
 	getData() {
 		fetch(this.createUrl())
-			.then(res => res.json())
-			.then(data => this.setState({ data }));
+			.then(res => {
+				if (!res.ok)
+					throw new Error('Something went wrong. Please try again later.');
+				return res.json();
+			})
+			.then(data => this.setState({ books: data.items }))
+			.catch(err => this.setState({ error: err.message }));
 	}
 	setUserInput(input) {
 		const state = Object.assign({}, this.state);
@@ -52,6 +59,12 @@ export default class MainContainer extends Component {
 						this.setFilter(key, value);
 					}}
 				/>
+				{Object.entries(this.state.books).length === 0 &&
+				this.state.books.constructor === Object ? (
+					''
+				) : (
+					<DisplayedBooks books={this.state.books} />
+				)}
 			</main>
 		);
 	}
